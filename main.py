@@ -1,11 +1,130 @@
-import uvicorn
-from fastapi import FastAPI
+from fastapi import FastAPI, Depends, HTTPException, status
+from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
+from sqlalchemy.orm import Session
+from typing import List
+from jose import JWTError, jwt
+
+import models, schemas, crud, auth
+from database import SessionLocal, engine, Base
+
+# Создание таблиц при запуске
+Base.metadata.create_all(bind=engine)
 
 app = FastAPI()
+oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 
-@app.get("/")
-def hello():
-    return {"message": "Hello, world"}
+# Получение сессии БД
+def get_db():
+    db = SessionLocal()
+    try:
+        yield db
+    finally:
+        db.close()
 
-if __name__ == "__main__":
-    uvicorn.run("main:app", reload = True)
+# Получение текущего пользователя по токену
+def get_current_user(token: str = Depends(oauth2_scheme), db: Session = Depends(get_db)):
+    credentials_exception = HTTPException(
+        status_code=status.HTTP_401_UNAUTHORIZED,
+        detail="Could not validate credentials",
+        headers={"WWW-Authenticate": "Bearer"},
+    )
+    try:
+        payload = jwt.decode(token, auth.SECRET_KEY, algorithms=[auth.ALGORITHM])
+        username: str = payload.get("sub")
+        if username is None:
+            raise credentials_exception
+    except JWTError:
+        raise credentials_exception
+    user = crud.get_user_by_username(db, username=username)
+    if user is None:
+        raise credentials_exception
+    return user
+
+# --- Авторизация и регистрация ---
+
+@app.post("/register", response_model=schemas.User)
+def register(user: schemas.UserCreate, db: Session = Depends(get_db)):
+    db_user = crud.get_user_by_username(db, user.username)
+    if db_user:
+        raise HTTPException(status_code=400, detail="Username already registered")
+    return crud.create_user(db, user)
+
+@app.post("/token")
+def login(form_data: OAuth2PasswordRequestForm = Depends(), db: Session = Depends(get_db)):
+    user = crud.authenticate_user(db, form_data.username, form_data.password)
+    if not user:
+        raise HTTPException(status_code=400, detail="Incorrect username or password")
+    access_token = auth.create_access_token(data={"sub": user.username})
+    return {"access_token": access_token, "token_type": "bearer"}
+
+@app.get("/users/me", response_model=schemas.User)
+def read_users_me(current_user: schemas.User = Depends(get_current_user)):
+    return current_user
+
+# --- CRUD для глобальных справочников ---
+
+@app.post("/abilities/", response_model=schemas.Ability)
+def create_ability(ability: schemas.AbilityCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    # Можно сделать проверку прав, если нужно
+    return crud.create_ability(db, ability)
+
+@app.get("/abilities/", response_model=List[schemas.Ability])
+def get_abilities(db: Session = Depends(get_db)):
+    return crud.get_abilities(db)
+
+@app.post("/equipment/", response_model=schemas.Equipment)
+def create_equipment(equipment: schemas.EquipmentCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    return crud.create_equipment(db, equipment)
+
+@app.get("/equipment/", response_model=List[schemas.Equipment])
+def get_equipments(db: Session = Depends(get_db)):
+    return crud.get_equipments(db)
+
+# --- CRUD
+#
+# для персонажей
+
+@app.post("/characters/", response_model=schemas.Character)
+def create_character(character: schemas.CharacterCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    return crud.create_character(db, character, user.id)
+
+@app.get("/characters/", response_model=List[schemas.Character])
+def get_characters(db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    return crud.get_characters_by_user(db, user.id)
+
+@app.get("/characters/{character_id}", response_model=schemas.Character)
+def get_character(character_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    return character
+
+# --- Добавление способностей и предметов персонажу ---
+
+@app.post("/characters/{character_id}/abilities/", response_model=schemas.CharacterAbility)
+def add_ability_to_character(character_id: int, ca: schemas.CharacterAbilityCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    return crud.add_ability_to_character(db, character_id, ca)
+
+@app.get("/characters/{character_id}/abilities/", response_model=List[schemas.CharacterAbility])
+def get_character_abilities(character_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    return crud.get_character_abilities(db, character_id)
+
+@app.post("/characters/{character_id}/equipment/", response_model=schemas.CharacterEquipment)
+def add_equipment_to_character(character_id: int, ce: schemas.CharacterEquipmentCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    return crud.add_equipment_to_character(db, character_id, ce)
+
+@app.get("/characters/{character_id}/equipment/", response_model=List[schemas.CharacterEquipment])
+def get_character_equipments(character_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    return crud.get_character_equipments(db, character_id)
