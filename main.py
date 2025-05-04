@@ -80,8 +80,6 @@ def create_equipment(equipment: schemas.EquipmentCreate, db: Session = Depends(g
 def get_equipments(db: Session = Depends(get_db)):
     return crud.get_equipments(db)
 
-# --- CRUD
-#
 # для персонажей
 
 @app.post("/characters/", response_model=schemas.Character)
