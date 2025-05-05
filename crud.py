@@ -1,4 +1,5 @@
 from sqlalchemy.orm import Session
+from sqlalchemy import func
 import models, schemas
 from passlib.context import CryptContext
 
@@ -38,20 +39,6 @@ def create_character_class(db: Session, char_class: schemas.CharacterClassCreate
 def get_character_classes(db: Session):
     return db.query(models.CharacterClass).all()
 
-def get_character_class(db: Session, class_id: int):
-    return db.query(models.CharacterClass).filter(models.CharacterClass.id == class_id).first()
-
-# --- ClassLevelAbility ---
-def create_class_level_ability(db: Session, cla: schemas.ClassLevelAbilityCreate):
-    db_cla = models.ClassLevelAbility(**cla.dict())
-    db.add(db_cla)
-    db.commit()
-    db.refresh(db_cla)
-    return db_cla
-
-def get_class_level_abilities_for_class_and_level(db: Session, class_id: int, level: int):
-    return db.query(models.ClassLevelAbility).filter_by(class_id=class_id, level=level).all()
-
 # --- Ability ---
 def get_ability_by_name(db: Session, name: str):
     return db.query(models.Ability).filter(models.Ability.name == name).first()
@@ -67,36 +54,6 @@ def create_ability(db: Session, ability: schemas.AbilityCreate):
 
 def get_abilities(db: Session):
     return db.query(models.Ability).all()
-
-def get_ability(db: Session, ability_id: int):
-    return db.query(models.Ability).filter(models.Ability.id == ability_id).first()
-
-# --- CharacterAbility ---
-def add_ability_to_character(db: Session, character_id: int, ca: schemas.CharacterAbilityCreate):
-    # Проверка: есть ли уже такая способность у персонажа
-    exists = db.query(models.CharacterAbility).filter_by(character_id=character_id, ability_id=ca.ability_id).first()
-    if exists:
-        raise ValueError("This character already has this ability")
-    db_ca = models.CharacterAbility(character_id=character_id, **ca.dict())
-    db.add(db_ca)
-    db.commit()
-    db.refresh(db_ca)
-    return db_ca
-
-def remove_ability_from_character(db: Session, character_id: int, ability_id: int):
-    ca = db.query(models.CharacterAbility).filter_by(character_id=character_id, ability_id=ability_id).first()
-    if not ca:
-        return None
-    db.delete(ca)
-    db.commit()
-    return ca
-
-
-def get_character_abilities(db: Session, character_id: int):
-    return db.query(models.CharacterAbility).filter(models.CharacterAbility.character_id == character_id).all()
-
-def character_has_ability(db: Session, character_id: int, ability_id: int):
-    return db.query(models.CharacterAbility).filter_by(character_id=character_id, ability_id=ability_id).first()
 
 # --- Equipment ---
 def get_equipment_by_name(db: Session, name: str):
@@ -114,8 +71,68 @@ def create_equipment(db: Session, equipment: schemas.EquipmentCreate):
 def get_equipments(db: Session):
     return db.query(models.Equipment).all()
 
-def get_equipment(db: Session, equipment_id: int):
-    return db.query(models.Equipment).filter(models.Equipment.id == equipment_id).first()
+# --- Character ---
+def create_character(db: Session, character: schemas.CharacterCreate, user_id: int):
+    # Автоматически подбираем следующий local_id для пользователя
+    last_local = db.query(func.max(models.Character.local_id)).filter(models.Character.owner_id == user_id).scalar()
+    next_local_id = 1 if last_local is None else last_local + 1
+    db_character = models.Character(
+        **character.dict(exclude={"local_id"}),
+        owner_id=user_id,
+        local_id=next_local_id
+    )
+    db.add(db_character)
+    db.commit()
+    db.refresh(db_character)
+    return db_character
+
+def get_characters_by_user(db: Session, user_id: int):
+    return db.query(models.Character).filter(models.Character.owner_id == user_id).all()
+
+def get_character_by_local_id(db: Session, owner_id: int, local_id: int):
+    return db.query(models.Character).filter(
+        models.Character.owner_id == owner_id,
+        models.Character.local_id == local_id
+    ).first()
+
+def delete_character(db: Session, character_id: int):
+    character = db.query(models.Character).filter(models.Character.id == character_id).first()
+    if character:
+        db.delete(character)
+        db.commit()
+
+def update_character(db: Session, character_id: int, character_update: schemas.CharacterCreate):
+    character = db.query(models.Character).filter(models.Character.id == character_id).first()
+    if not character:
+        return None
+    for field, value in character_update.dict().items():
+        if field != "local_id":  # local_id менять не даём
+            setattr(character, field, value)
+    db.commit()
+    db.refresh(character)
+    return character
+
+# --- CharacterAbility ---
+def add_ability_to_character(db: Session, character_id: int, ca: schemas.CharacterAbilityCreate):
+    exists = db.query(models.CharacterAbility).filter_by(character_id=character_id, ability_id=ca.ability_id).first()
+    if exists:
+        raise ValueError("This character already has this ability")
+    db_ca = models.CharacterAbility(character_id=character_id, **ca.dict())
+    db.add(db_ca)
+    db.commit()
+    db.refresh(db_ca)
+    return db_ca
+
+def get_character_abilities(db: Session, character_id: int):
+    return db.query(models.CharacterAbility).filter(models.CharacterAbility.character_id == character_id).all()
+
+def remove_ability_from_character(db: Session, character_id: int, ability_id: int):
+    ca = db.query(models.CharacterAbility).filter_by(character_id=character_id, ability_id=ability_id).first()
+    if not ca:
+        return None
+    db.delete(ca)
+    db.commit()
+    return ca
 
 # --- CharacterEquipment ---
 def add_equipment_to_character(db: Session, character_id: int, ce: schemas.CharacterEquipmentCreate):
@@ -125,6 +142,9 @@ def add_equipment_to_character(db: Session, character_id: int, ce: schemas.Chara
     db.refresh(db_ce)
     return db_ce
 
+def get_character_equipments(db: Session, character_id: int):
+    return db.query(models.CharacterEquipment).filter(models.CharacterEquipment.character_id == character_id).all()
+
 def remove_equipment_from_character(db: Session, character_id: int, equipment_id: int):
     ce = db.query(models.CharacterEquipment).filter_by(character_id=character_id, equipment_id=equipment_id).first()
     if not ce:
@@ -133,42 +153,11 @@ def remove_equipment_from_character(db: Session, character_id: int, equipment_id
     db.commit()
     return ce
 
-
-def get_character_equipments(db: Session, character_id: int):
-    return db.query(models.CharacterEquipment).filter(models.CharacterEquipment.character_id == character_id).all()
-
-# --- Character ---
-def create_character(db: Session, character: schemas.CharacterCreate, user_id: int):
-    db_character = models.Character(**character.dict(), owner_id=user_id)
-    db.add(db_character)
-    db.commit()
-    db.refresh(db_character)
-    return db_character
-
-def get_characters_by_user(db: Session, user_id: int):
-    return db.query(models.Character).filter(models.Character.owner_id == user_id).all()
-
-def get_character(db: Session, character_id: int):
-    return db.query(models.Character).filter(models.Character.id == character_id).first()
-
-# --- Level Up Character ---
-def level_up_character(db: Session, character_id: int):
-    character = db.query(models.Character).filter_by(id=character_id).first()
-    if not character:
+def set_equipment_equipped(db: Session, character_id: int, equipment_id: int, equipped: bool):
+    ce = db.query(models.CharacterEquipment).filter_by(character_id=character_id, equipment_id=equipment_id).first()
+    if not ce:
         return None
-    character.level += 1
-
-    new_abilities = get_class_level_abilities_for_class_and_level(db, character.character_class_id, character.level)
-    for cla in new_abilities:
-        already = character_has_ability(db, character.id, cla.ability_id)
-        if not already:
-            db_ca = models.CharacterAbility(
-                character_id=character.id,
-                ability_id=cla.ability_id,
-                current_uses=cla.ability.uses if cla.ability else -1,
-                name=cla.ability.name if cla.ability else ""
-            )
-            db.add(db_ca)
+    ce.is_equipped = equipped
     db.commit()
-    db.refresh(character)
-    return character
+    db.refresh(ce)
+    return ce

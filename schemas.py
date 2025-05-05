@@ -1,6 +1,7 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
+# --- CharacterClass ---
 class CharacterClassBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -13,6 +14,7 @@ class CharacterClass(CharacterClassBase):
     class Config:
         from_attributes = True
 
+# --- Ability ---
 class AbilityBase(BaseModel):
     name: str
     available_classes: str
@@ -27,34 +29,7 @@ class Ability(AbilityBase):
     class Config:
         from_attributes = True
 
-class ClassLevelAbilityBase(BaseModel):
-    class_id: int
-    level: int
-    ability_id: int
-
-class ClassLevelAbilityCreate(ClassLevelAbilityBase):
-    pass
-
-class ClassLevelAbility(ClassLevelAbilityBase):
-    id: int
-    ability: Ability
-    class Config:
-        from_attributes = True
-
-class CharacterAbilityBase(BaseModel):
-    ability_id: int
-    current_uses: int
-    name: Optional[str] = None
-
-class CharacterAbilityCreate(CharacterAbilityBase):
-    pass
-
-class CharacterAbility(CharacterAbilityBase):
-    id: int
-    ability: Ability
-    class Config:
-        from_attributes = True
-
+# --- Equipment ---
 class EquipmentBase(BaseModel):
     name: str
     cost: int
@@ -69,9 +44,25 @@ class Equipment(EquipmentBase):
     class Config:
         from_attributes = True
 
+# --- CharacterAbility ---
+class CharacterAbilityBase(BaseModel):
+    ability_id: int
+    current_uses: int
+    name: Optional[str] = None
+
+class CharacterAbilityCreate(CharacterAbilityBase):
+    pass
+
+class CharacterAbility(CharacterAbilityBase):
+    id: int
+    ability: Ability
+    class Config:
+        from_attributes = True
+
+# --- CharacterEquipment ---
 class CharacterEquipmentBase(BaseModel):
     equipment_id: int
-    is_equipped: int = 0
+    is_equipped: bool = False
     name: Optional[str] = None
 
 class CharacterEquipmentCreate(CharacterEquipmentBase):
@@ -83,32 +74,34 @@ class CharacterEquipment(CharacterEquipmentBase):
     class Config:
         from_attributes = True
 
+# --- Character ---
 class CharacterBase(BaseModel):
+    local_id: int
     name: str
-    race: str
-    background: str
     character_class_id: int
-    level: int = Field(ge=1)
+    max_hp: int
+    current_hp: int
     armor_class: int
-    strength: int = Field(ge=1, le=30)
-    dexterity: int = Field(ge=1, le=30)
-    constitution: int = Field(ge=1, le=30)
-    intelligence: int = Field(ge=1, le=30)
-    wisdom: int = Field(ge=1, le=30)
-    charisma: int = Field(ge=1, le=30)
+    strength: int
+    dexterity: int
+    constitution: int
+    intelligence: int
+    wisdom: int
+    charisma: int
 
 class CharacterCreate(CharacterBase):
     pass
 
 class Character(CharacterBase):
     id: int
+    owner_id: int
     abilities: List[CharacterAbility] = []
     equipment: List[CharacterEquipment] = []
-    owner_id: int
-    character_class_rel: Optional[CharacterClass] = None
+    character_class: Optional[CharacterClass] = None
     class Config:
         from_attributes = True
 
+# --- User ---
 class UserBase(BaseModel):
     username: str
 
