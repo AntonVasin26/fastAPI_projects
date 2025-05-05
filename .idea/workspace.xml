@@ -4,11 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Улучшения main для прохождения Pylint">
+    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Улучшения для прохождения Pylint и изменение Readme">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemas.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minimal_db_2.2.db" beforeDir="false" afterPath="$PROJECT_DIR$/minimal_db_2.2.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -352,7 +350,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746472867337</updated>
     </task>
-    <option name="localTasksCounter" value="31" />
+    <task id="LOCAL-00031" summary="Улучшения для прохождения Pylint и изменение Readme">
+      <option name="closed" value="true" />
+      <created>1746474688320</created>
+      <option name="number" value="00031" />
+      <option name="presentableId" value="LOCAL-00031" />
+      <option name="project" value="LOCAL" />
+      <updated>1746474688320</updated>
+    </task>
+    <option name="localTasksCounter" value="32" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -370,7 +376,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Фикс бага из-за которого запускался defoult main вместо нужного." />
     <MESSAGE value="Промежуточный комит перед созданием минимального наполнения базы данных" />
     <MESSAGE value="Промежуточный комит перед добавлением новых функций взаимолействия с классом персонажа." />
     <MESSAGE value="переработка crud" />
@@ -395,7 +400,8 @@
     <MESSAGE value="Удаление лишних файлов" />
     <MESSAGE value="Улучшения для прохождения Pylint" />
     <MESSAGE value="Улучшения main для прохождения Pylint" />
-    <option name="LAST_COMMIT_MESSAGE" value="Улучшения main для прохождения Pylint" />
+    <MESSAGE value="Улучшения для прохождения Pylint и изменение Readme" />
+    <option name="LAST_COMMIT_MESSAGE" value="Улучшения для прохождения Pylint и изменение Readme" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_py$.coverage" NAME=" Coverage Results" MODIFIED="1746469687525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
