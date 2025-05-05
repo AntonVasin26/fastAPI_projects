@@ -1,7 +1,20 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
-# Глобальная способность
+# --- CharacterClass ---
+class CharacterClassBase(BaseModel):
+    name: str
+    description: Optional[str] = None
+
+class CharacterClassCreate(CharacterClassBase):
+    pass
+
+class CharacterClass(CharacterClassBase):
+    id: int
+    class Config:
+        from_attributes = True
+
+# --- Ability ---
 class AbilityBase(BaseModel):
     name: str
     available_classes: str
@@ -14,9 +27,24 @@ class AbilityCreate(AbilityBase):
 class Ability(AbilityBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# Индивидуальная способность персонажа
+# --- ClassLevelAbility ---
+class ClassLevelAbilityBase(BaseModel):
+    class_id: int
+    level: int
+    ability_id: int
+
+class ClassLevelAbilityCreate(ClassLevelAbilityBase):
+    pass
+
+class ClassLevelAbility(ClassLevelAbilityBase):
+    id: int
+    ability: Ability
+    class Config:
+        from_attributes = True
+
+# --- CharacterAbility ---
 class CharacterAbilityBase(BaseModel):
     ability_id: int
     current_uses: int
@@ -29,9 +57,9 @@ class CharacterAbility(CharacterAbilityBase):
     id: int
     ability: Ability
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# Глобальное снаряжение
+# --- Equipment ---
 class EquipmentBase(BaseModel):
     name: str
     cost: int
@@ -44,9 +72,9 @@ class EquipmentCreate(EquipmentBase):
 class Equipment(EquipmentBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# Индивидуальное снаряжение персонажа
+# --- CharacterEquipment ---
 class CharacterEquipmentBase(BaseModel):
     equipment_id: int
     is_equipped: int = 0
@@ -59,14 +87,14 @@ class CharacterEquipment(CharacterEquipmentBase):
     id: int
     equipment: Equipment
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# Персонаж
+# --- Character ---
 class CharacterBase(BaseModel):
     name: str
     race: str
     background: str
-    character_class: str
+    character_class_id: int  # теперь id класса персонажа!
     level: int = Field(ge=1)
     armor_class: int
     strength: int = Field(ge=1, le=30)
@@ -84,10 +112,11 @@ class Character(CharacterBase):
     abilities: List[CharacterAbility] = []
     equipment: List[CharacterEquipment] = []
     owner_id: int
+    character_class_rel: Optional[CharacterClass] = None  # удобно для вывода инфы о классе
     class Config:
-        orm_mode = True
+        from_attributes = True
 
-# Пользователь
+# --- User ---
 class UserBase(BaseModel):
     username: str
 
@@ -97,4 +126,4 @@ class UserCreate(UserBase):
 class User(UserBase):
     id: int
     class Config:
-        orm_mode = True
+        from_attributes = True

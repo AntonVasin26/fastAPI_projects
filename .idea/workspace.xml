@@ -5,9 +5,7 @@
   </component>
   <component name="ChangeListManager">
     <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Промежуточный комит перед добавлением новых функций взаимолействия с классом персонажа.">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minimal_db.db" beforeDir="false" afterPath="$PROJECT_DIR$/minimal_db.db" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemas.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -97,7 +95,7 @@
       <workItem from="1746363054257" duration="484000" />
       <workItem from="1746363590881" duration="1360000" />
       <workItem from="1746365392294" duration="3175000" />
-      <workItem from="1746435610437" duration="864000" />
+      <workItem from="1746435610437" duration="1140000" />
     </task>
     <task id="LOCAL-00003" summary="Создание файла запуска">
       <option name="closed" value="true" />
