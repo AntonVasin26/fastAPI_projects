@@ -31,12 +31,13 @@ class Equipment(Base):
     cost = Column(Integer)
     rarity = Column(String)
     description = Column(String)
+    effects = Column(String)  # Новое поле для JSON-модификаторов
 
 class Character(Base):
     __tablename__ = "characters"
-    id = Column(Integer, primary_key=True, index=True)  # глобальный id
+    id = Column(Integer, primary_key=True, index=True)
     owner_id = Column(Integer, ForeignKey("users.id"), index=True)
-    local_id = Column(Integer, index=True)  # локальный id в системе пользователя
+    local_id = Column(Integer, index=True)
 
     name = Column(String, nullable=False)
     character_class_id = Column(Integer, ForeignKey("character_classes.id"), nullable=False)

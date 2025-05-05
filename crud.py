@@ -73,7 +73,6 @@ def get_equipments(db: Session):
 
 # --- Character ---
 def create_character(db: Session, character: schemas.CharacterCreate, user_id: int):
-    # Автоматически подбираем следующий local_id для пользователя
     last_local = db.query(func.max(models.Character.local_id)).filter(models.Character.owner_id == user_id).scalar()
     next_local_id = 1 if last_local is None else last_local + 1
     db_character = models.Character(
@@ -106,7 +105,7 @@ def update_character(db: Session, character_id: int, character_update: schemas.C
     if not character:
         return None
     for field, value in character_update.dict().items():
-        if field != "local_id":  # local_id менять не даём
+        if field != "local_id":
             setattr(character, field, value)
     db.commit()
     db.refresh(character)
@@ -144,6 +143,9 @@ def add_equipment_to_character(db: Session, character_id: int, ce: schemas.Chara
 
 def get_character_equipments(db: Session, character_id: int):
     return db.query(models.CharacterEquipment).filter(models.CharacterEquipment.character_id == character_id).all()
+
+def get_character_equipped_items(db: Session, character_id: int):
+    return db.query(models.CharacterEquipment).filter_by(character_id=character_id, is_equipped=True).all()
 
 def remove_equipment_from_character(db: Session, character_id: int, equipment_id: int):
     ce = db.query(models.CharacterEquipment).filter_by(character_id=character_id, equipment_id=equipment_id).first()
