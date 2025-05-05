@@ -4,8 +4,9 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="переработка crud">
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Изменения main для проверки существования записи о сущеествующих предметах способностях и классах.">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/minimal_db.db" beforeDir="false" afterPath="$PROJECT_DIR$/minimal_db.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,7 +97,7 @@
       <workItem from="1746363590881" duration="1360000" />
       <workItem from="1746365392294" duration="3175000" />
       <workItem from="1746435610437" duration="1140000" />
-      <workItem from="1746436782459" duration="316000" />
+      <workItem from="1746436782459" duration="2094000" />
     </task>
     <task id="LOCAL-00003" summary="Создание файла запуска">
       <option name="closed" value="true" />
@@ -146,7 +147,39 @@
       <option name="project" value="LOCAL" />
       <updated>1746437004928</updated>
     </task>
-    <option name="localTasksCounter" value="9" />
+    <task id="LOCAL-00009" summary="переработка main">
+      <option name="closed" value="true" />
+      <created>1746437137480</created>
+      <option name="number" value="00009" />
+      <option name="presentableId" value="LOCAL-00009" />
+      <option name="project" value="LOCAL" />
+      <updated>1746437137480</updated>
+    </task>
+    <task id="LOCAL-00010" summary="переработка main">
+      <option name="closed" value="true" />
+      <created>1746437288648</created>
+      <option name="number" value="00010" />
+      <option name="presentableId" value="LOCAL-00010" />
+      <option name="project" value="LOCAL" />
+      <updated>1746437288648</updated>
+    </task>
+    <task id="LOCAL-00011" summary="Изменения груд для проверки существования записи о сущеествующих предметах способностях и классах.">
+      <option name="closed" value="true" />
+      <created>1746437962364</created>
+      <option name="number" value="00011" />
+      <option name="presentableId" value="LOCAL-00011" />
+      <option name="project" value="LOCAL" />
+      <updated>1746437962364</updated>
+    </task>
+    <task id="LOCAL-00012" summary="Изменения main для проверки существования записи о сущеествующих предметах способностях и классах.">
+      <option name="closed" value="true" />
+      <created>1746438201841</created>
+      <option name="number" value="00012" />
+      <option name="presentableId" value="LOCAL-00012" />
+      <option name="project" value="LOCAL" />
+      <updated>1746438201841</updated>
+    </task>
+    <option name="localTasksCounter" value="13" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -172,7 +205,10 @@
     <MESSAGE value="Промежуточный комит перед созданием минимального наполнения базы данных" />
     <MESSAGE value="Промежуточный комит перед добавлением новых функций взаимолействия с классом персонажа." />
     <MESSAGE value="переработка crud" />
-    <option name="LAST_COMMIT_MESSAGE" value="переработка crud" />
+    <MESSAGE value="переработка main" />
+    <MESSAGE value="Изменения груд для проверки существования записи о сущеествующих предметах способностях и классах." />
+    <MESSAGE value="Изменения main для проверки существования записи о сущеествующих предметах способностях и классах." />
+    <option name="LAST_COMMIT_MESSAGE" value="Изменения main для проверки существования записи о сущеествующих предметах способностях и классах." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1746364311547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
