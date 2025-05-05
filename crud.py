@@ -163,3 +163,85 @@ def set_equipment_equipped(db: Session, character_id: int, equipment_id: int, eq
     db.commit()
     db.refresh(ce)
     return ce
+
+
+# Добавление зависимости повышения уровня
+
+def get_class_progressions(db: Session):
+    return db.query(models.ClassProgression).all()
+
+def get_class_progression(db: Session, progression_id: int):
+    return db.query(models.ClassProgression).filter(models.ClassProgression.id == progression_id).first()
+
+def create_class_progression(db: Session, progression: schemas.ClassProgressionCreate):
+    db_prog = models.ClassProgression(**progression.dict())
+    db.add(db_prog)
+    db.commit()
+    db.refresh(db_prog)
+    return db_prog
+
+def update_class_progression(db: Session, progression_id: int, progression: schemas.ClassProgressionCreate):
+    db_prog = db.query(models.ClassProgression).filter(models.ClassProgression.id == progression_id).first()
+    if not db_prog:
+        return None
+    for field, value in progression.dict().items():
+        setattr(db_prog, field, value)
+    db.commit()
+    db.refresh(db_prog)
+    return db_prog
+
+def delete_class_progression(db: Session, progression_id: int):
+    db_prog = db.query(models.ClassProgression).filter(models.ClassProgression.id == progression_id).first()
+    if not db_prog:
+        return None
+    db.delete(db_prog)
+    db.commit()
+    return db_prog
+
+def get_progression_for_class_and_level(db: Session, character_class_id: int, level: int):
+    return db.query(models.ClassProgression).filter(
+        models.ClassProgression.character_class_id == character_class_id,
+        models.ClassProgression.level == level
+    ).first()
+
+# синхронизация уровня
+def get_class_progressions(db: Session):
+    return db.query(models.ClassProgression).all()
+
+def get_class_progression(db: Session, progression_id: int):
+    return db.query(models.ClassProgression).filter(models.ClassProgression.id == progression_id).first()
+
+def create_class_progression(db: Session, progression: schemas.ClassProgressionCreate):
+    db_prog = models.ClassProgression(**progression.dict())
+    db.add(db_prog)
+    db.commit()
+    db.refresh(db_prog)
+    return db_prog
+
+def update_class_progression(db: Session, progression_id: int, progression: schemas.ClassProgressionCreate):
+    db_prog = db.query(models.ClassProgression).filter(models.ClassProgression.id == progression_id).first()
+    if not db_prog:
+        return None
+    for field, value in progression.dict().items():
+        setattr(db_prog, field, value)
+    db.commit()
+    db.refresh(db_prog)
+    return db_prog
+
+def delete_class_progression(db: Session, progression_id: int):
+    db_prog = db.query(models.ClassProgression).filter(models.ClassProgression.id == progression_id).first()
+    if not db_prog:
+        return None
+    db.delete(db_prog)
+    db.commit()
+    return db_prog
+
+def get_progression_for_class_and_level(db: Session, character_class_id: int, level: int):
+    return db.query(models.ClassProgression).filter(
+        models.ClassProgression.character_class_id == character_class_id,
+        models.ClassProgression.level == level
+    ).first()
+
+
+
+
