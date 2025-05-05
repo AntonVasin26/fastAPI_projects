@@ -18,7 +18,7 @@ class CharacterClass(CharacterClassBase):
 class AbilityBase(BaseModel):
     name: str
     available_classes: str
-    uses: int
+    uses: int  # -1 = неограниченно
     description: Optional[str] = None
 
 class AbilityCreate(AbilityBase):
@@ -94,7 +94,7 @@ class CharacterBase(BaseModel):
     name: str
     race: str
     background: str
-    character_class_id: int  # теперь id класса персонажа!
+    character_class_id: int  # id класса персонажа
     level: int = Field(ge=1)
     armor_class: int
     strength: int = Field(ge=1, le=30)
