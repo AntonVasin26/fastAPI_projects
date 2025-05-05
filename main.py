@@ -229,7 +229,7 @@ def set_character_level(
 ):
     """Set character level and sync abilities/bonuses."""
     character = crud.get_character_by_local_id(db, user.id, local_id)
-    if not character:
+    if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     character = crud.sync_character_level(db, character, new_level)
     return character
@@ -242,7 +242,7 @@ def level_up_character(
 ):
     """Increase character level by 1 and sync abilities/bonuses."""
     character = crud.get_character_by_local_id(db, user.id, local_id)
-    if not character:
+    if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     new_level = character.level + 1
     character = crud.sync_character_level(db, character, new_level)

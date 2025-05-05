@@ -287,21 +287,29 @@ def set_equipment_equipped(db: Session, character_id: int, equipment_id: int, eq
     db.refresh(db_ce)
     return db_ce
 
+import json
 
 def sync_character_level(db: Session, character: models.Character, new_level: int) -> models.Character:
     """Sync character's abilities and bonuses with class progression for new level."""
-    db.query(models.CharacterAbility).filter(models.CharacterAbility.character_id == character.id).delete()
-    for lvl in range(1, new_level + 1):
-        prog = get_progression_for_class_and_level(db, character.character_class_id, lvl)
-        if prog and prog.abilities:
-            import json
+    for lvl in range(character.level + 1, new_level + 1):
+        progression = get_progression_for_class_and_level(db, character.character_class_id, lvl)
+        if progression and progression.abilities:
             try:
-                abilities = json.loads(prog.abilities)
-                for ab_id in abilities:
-                    db.add(models.CharacterAbility(character_id=character.id, ability_id=ab_id))
+                ability_ids = json.loads(progression.abilities)
             except (json.JSONDecodeError, TypeError, AttributeError):
-                pass
-        # Здесь можно добавить обработку других бонусов, например, HP
+                ability_ids = []
+            for ab_id in ability_ids:
+                exists = db.query(models.CharacterAbility).filter(
+                    models.CharacterAbility.character_id == character.id,
+                    models.CharacterAbility.ability_id == ab_id
+                ).first()
+                if not exists:
+                    db.add(models.CharacterAbility(character_id=character.id, ability_id=ab_id))
+        # Добавление бонуса к HP, если есть
+        if progression and progression.hp_bonus:
+            character.max_hp += progression.hp_bonus
+            character.current_hp += progression.hp_bonus
+
     character.level = new_level
     db.commit()
     db.refresh(character)
