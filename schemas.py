@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List, Optional
 
 # --- CharacterClass ---
@@ -35,6 +35,7 @@ class EquipmentBase(BaseModel):
     cost: int
     rarity: str
     description: Optional[str] = None
+    effects: Optional[str] = None  # JSON-строка с модификаторами
 
 class EquipmentCreate(EquipmentBase):
     pass
@@ -79,6 +80,7 @@ class CharacterBase(BaseModel):
     local_id: int
     name: str
     character_class_id: int
+    level: int  # <--- Новое поле!
     max_hp: int
     current_hp: int
     armor_class: int
@@ -88,6 +90,7 @@ class CharacterBase(BaseModel):
     intelligence: int
     wisdom: int
     charisma: int
+
 
 class CharacterCreate(CharacterBase):
     pass
@@ -101,6 +104,7 @@ class Character(CharacterBase):
     class Config:
         from_attributes = True
 
+
 # --- User ---
 class UserBase(BaseModel):
     username: str
@@ -112,3 +116,20 @@ class User(UserBase):
     id: int
     class Config:
         from_attributes = True
+
+ # новое - повышение уровня
+class ClassProgressionBase(BaseModel):
+    character_class_id: int
+    level: int
+    hp_bonus: int = 0
+    abilities: Optional[str] = None  # JSON-строка со списком id или имен абилок
+    other_bonuses: Optional[str] = None
+
+class ClassProgressionCreate(ClassProgressionBase):
+    pass
+
+class ClassProgression(ClassProgressionBase):
+    id: int
+    class Config:
+        from_attributes = True
+
