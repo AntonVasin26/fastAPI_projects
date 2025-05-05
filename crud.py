@@ -23,7 +23,12 @@ def authenticate_user(db: Session, username: str, password: str):
     return user
 
 # --- CharacterClass ---
+def get_character_class_by_name(db: Session, name: str):
+    return db.query(models.CharacterClass).filter(models.CharacterClass.name == name).first()
+
 def create_character_class(db: Session, char_class: schemas.CharacterClassCreate):
+    if get_character_class_by_name(db, char_class.name):
+        raise ValueError("Character class with this name already exists")
     db_class = models.CharacterClass(**char_class.dict())
     db.add(db_class)
     db.commit()
@@ -48,7 +53,12 @@ def get_class_level_abilities_for_class_and_level(db: Session, class_id: int, le
     return db.query(models.ClassLevelAbility).filter_by(class_id=class_id, level=level).all()
 
 # --- Ability ---
+def get_ability_by_name(db: Session, name: str):
+    return db.query(models.Ability).filter(models.Ability.name == name).first()
+
 def create_ability(db: Session, ability: schemas.AbilityCreate):
+    if get_ability_by_name(db, ability.name):
+        raise ValueError("Ability with this name already exists")
     db_ability = models.Ability(**ability.dict())
     db.add(db_ability)
     db.commit()
@@ -76,7 +86,12 @@ def character_has_ability(db: Session, character_id: int, ability_id: int):
     return db.query(models.CharacterAbility).filter_by(character_id=character_id, ability_id=ability_id).first()
 
 # --- Equipment ---
+def get_equipment_by_name(db: Session, name: str):
+    return db.query(models.Equipment).filter(models.Equipment.name == name).first()
+
 def create_equipment(db: Session, equipment: schemas.EquipmentCreate):
+    if get_equipment_by_name(db, equipment.name):
+        raise ValueError ("Equipment with this name already exists")
     db_equipment = models.Equipment(**equipment.dict())
     db.add(db_equipment)
     db.commit()
@@ -124,7 +139,6 @@ def level_up_character(db: Session, character_id: int):
     # Найти новые способности для этого класса и уровня
     new_abilities = get_class_level_abilities_for_class_and_level(db, character.character_class_id, character.level)
     for cla in new_abilities:
-        # Проверить, есть ли уже эта способность у персонажа
         already = character_has_ability(db, character.id, cla.ability_id)
         if not already:
             db_ca = models.CharacterAbility(

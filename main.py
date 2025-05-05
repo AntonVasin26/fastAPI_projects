@@ -60,7 +60,10 @@ def read_users_me(current_user: schemas.User = Depends(get_current_user)):
 # --- CharacterClass ---
 @app.post("/character_classes/", response_model=schemas.CharacterClass)
 def create_character_class(char_class: schemas.CharacterClassCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
-    return crud.create_character_class(db, char_class)
+    try:
+        return crud.create_character_class(db, char_class)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/character_classes/", response_model=List[schemas.CharacterClass])
 def get_character_classes(db: Session = Depends(get_db)):
@@ -74,7 +77,10 @@ def create_class_level_ability(cla: schemas.ClassLevelAbilityCreate, db: Session
 # --- Ability ---
 @app.post("/abilities/", response_model=schemas.Ability)
 def create_ability(ability: schemas.AbilityCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
-    return crud.create_ability(db, ability)
+    try:
+        return crud.create_ability(db, ability)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/abilities/", response_model=List[schemas.Ability])
 def get_abilities(db: Session = Depends(get_db)):
@@ -83,7 +89,10 @@ def get_abilities(db: Session = Depends(get_db)):
 # --- Equipment ---
 @app.post("/equipment/", response_model=schemas.Equipment)
 def create_equipment(equipment: schemas.EquipmentCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
-    return crud.create_equipment(db, equipment)
+    try:
+        return crud.create_equipment(db, equipment)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
 
 @app.get("/equipment/", response_model=List[schemas.Equipment])
 def get_equipments(db: Session = Depends(get_db)):
@@ -127,3 +136,18 @@ def get_character_abilities(character_id: int, db: Session = Depends(get_db), us
     if character is None or character.owner_id != user.id:
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.get_character_abilities(db, character_id)
+
+# --- CharacterEquipment ---
+@app.post("/characters/{character_id}/equipment/", response_model=schemas.CharacterEquipment)
+def add_equipment_to_character(character_id: int, ce: schemas.CharacterEquipmentCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    return crud.add_equipment_to_character(db, character_id, ce)
+
+@app.get("/characters/{character_id}/equipment/", response_model=List[schemas.CharacterEquipment])
+def get_character_equipments(character_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    return crud.get_character_equipments(db, character_id)
