@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Переработкы логики базы данных персонажей.">
+    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="предварительное сохранение перед измененим снаряжения.">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemas.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -100,6 +102,7 @@
       <workItem from="1746439209855" duration="1718000" />
       <workItem from="1746440965139" duration="69000" />
       <workItem from="1746444183379" duration="4778000" />
+      <workItem from="1746450334023" duration="1276000" />
     </task>
     <task id="LOCAL-00003" summary="Создание файла запуска">
       <option name="closed" value="true" />
@@ -245,7 +248,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746450209819</updated>
     </task>
-    <option name="localTasksCounter" value="21" />
+    <task id="LOCAL-00021" summary="предварительное сохранение перед измененим снаряжения.">
+      <option name="closed" value="true" />
+      <created>1746451453865</created>
+      <option name="number" value="00021" />
+      <option name="presentableId" value="LOCAL-00021" />
+      <option name="project" value="LOCAL" />
+      <updated>1746451453865</updated>
+    </task>
+    <option name="localTasksCounter" value="22" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -282,7 +293,8 @@
     <MESSAGE value="Добавление проверки на сущестовование перснольной абилки, и добавление возможности удалять аблки и снаряжение." />
     <MESSAGE value="Промежуточный комит перед изменением структуры баззы данных в целях лучшего понимания настроек персонажа." />
     <MESSAGE value="Переработкы логики базы данных персонажей." />
-    <option name="LAST_COMMIT_MESSAGE" value="Переработкы логики базы данных персонажей." />
+    <MESSAGE value="предварительное сохранение перед измененим снаряжения." />
+    <option name="LAST_COMMIT_MESSAGE" value="предварительное сохранение перед измененим снаряжения." />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1746364311547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

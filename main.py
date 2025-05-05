@@ -1,8 +1,9 @@
 from fastapi import FastAPI, Depends, HTTPException, status, Response
 from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
-from typing import List
+from typing import List, Dict, Any
 from jose import JWTError, jwt
+import json
 
 import models, schemas, crud, auth
 from database import SessionLocal, engine, Base
@@ -150,7 +151,7 @@ def delete_ability_from_character(local_id: int, ability_id: int, db: Session = 
     result = crud.remove_ability_from_character(db, character.id, ability_id)
     if result is None:
         raise HTTPException(status_code=404, detail="Ability not found for this character")
-    return Response(status_code=204)
+    return Response (status_code=204)
 
 # --- CharacterEquipment ---
 @app.get("/characters/{local_id}/equipment/", response_model=List[schemas.CharacterEquipment])
@@ -159,6 +160,13 @@ def get_character_equipments(local_id: int, db: Session = Depends(get_db), user:
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.get_character_equipments(db, character.id)
+
+@app.get("/characters/{local_id}/equipment/equipped/", response_model=List[schemas.CharacterEquipment])
+def get_character_equipped_items(local_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+    character = crud.get_character_by_local_id(db, user.id, local_id)
+    if character is None:
+        raise HTTPException(status_code=404, detail="Character not found")
+    return crud.get_character_equipped_items(db, character.id)
 
 @app.post("/characters/{local_id}/equipment/", response_model=schemas.CharacterEquipment)
 def add_equipment_to_character(local_id: int, ce: schemas.CharacterEquipmentCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
@@ -196,3 +204,37 @@ def unequip_equipment(local_id: int, equipment_id: int, db: Session = Depends(ge
     if ce is None:
         raise HTTPException(status_code=404, detail="Equipment not found for this character")
     return ce
+
+# --- Итоговые характеристики персонажа с учётом экипировки ---
+@app.get("/characters/{local_id}/effective_stats/", response_model=Dict[str, Any])
+def get_effective_stats(
+    local_id: int,
+    db: Session = Depends(get_db),
+    user: schemas.User = Depends(get_current_user)
+):
+    character = crud.get_character_by_local_id(db, user.id, local_id)
+    if character is None:
+        raise HTTPException(status_code=404, detail="Character not found")
+    equipped_items = crud.get_character_equipped_items(db, character.id)
+    # Считаем итоговые характеристики
+    stats = {
+        "armor_class": character.armor_class,
+        "strength": character.strength,
+        "dexterity": character.dexterity,
+        "constitution": character.constitution,
+        "intelligence": character.intelligence,
+        "wisdom": character.wisdom,
+        "charisma": character.charisma,
+        "max_hp": character.max_hp,
+        "current_hp": character.current_hp,
+    }
+    for item in equipped_items:
+        if item.equipment and item.equipment.effects:
+            try:
+                effects = json.loads(item.equipment.effects)
+                for key, value in effects.items():
+                    if key in stats:
+                        stats[key] += value
+            except Exception:
+                pass
+    return stats

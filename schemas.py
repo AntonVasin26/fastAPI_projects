@@ -1,4 +1,4 @@
-from pydantic import BaseModel, Field
+from pydantic import BaseModel
 from typing import List, Optional
 
 # --- CharacterClass ---
@@ -35,6 +35,7 @@ class EquipmentBase(BaseModel):
     cost: int
     rarity: str
     description: Optional[str] = None
+    effects: Optional[str] = None  # JSON-строка с модификаторами
 
 class EquipmentCreate(EquipmentBase):
     pass
