@@ -126,4 +126,4 @@ def get_character_abilities(character_id: int, db: Session = Depends(get_db), us
     character = crud.get_character(db, character_id)
     if character is None or character.owner_id != user.id:
         raise HTTPException(status_code=404, detail="Character not found")
-    return crud.get_character_abilities(db
+    return crud.get_character_abilities(db, character_id)
