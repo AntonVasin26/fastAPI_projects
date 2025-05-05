@@ -60,7 +60,8 @@ def read_users_me(current_user: schemas.User = Depends(get_current_user)):
 
 # --- CharacterClass ---
 @app.post("/character_classes/", response_model=schemas.CharacterClass)
-def create_character_class(char_class: schemas.CharacterClassCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def create_character_class(char_class: schemas.CharacterClassCreate, db: Session = Depends(get_db),
+                           user: schemas.User = Depends(get_current_user)):
     try:
         return crud.create_character_class(db, char_class)
     except ValueError as e:
@@ -87,7 +88,8 @@ def create_class_progression(prog: schemas.ClassProgressionCreate, db: Session =
     return crud.create_class_progression(db, prog)
 
 @app.put("/class_progression/{prog_id}", response_model=schemas.ClassProgression)
-def update_class_progression(prog_id: int, prog: schemas.ClassProgressionCreate, db: Session = Depends(get_db)):
+def update_class_progression(prog_id: int, prog: schemas.ClassProgressionCreate,
+                             db: Session = Depends(get_db)):
     updated = crud.update_class_progression(db, prog_id, prog)
     if not updated:
         raise HTTPException(status_code=404, detail="Not found")
@@ -102,7 +104,8 @@ def delete_class_progression(prog_id: int, db: Session = Depends(get_db)):
 
 # --- Ability ---
 @app.post("/abilities/", response_model=schemas.Ability)
-def create_ability(ability: schemas.AbilityCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def create_ability(ability: schemas.AbilityCreate, db: Session = Depends(get_db),
+                   user: schemas.User = Depends(get_current_user)):
     try:
         return crud.create_ability(db, ability)
     except ValueError as e:
@@ -114,7 +117,8 @@ def get_abilities(db: Session = Depends(get_db)):
 
 # --- Equipment ---
 @app.post("/equipment/", response_model=schemas.Equipment)
-def create_equipment(equipment: schemas.EquipmentCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def create_equipment(equipment: schemas.EquipmentCreate, db: Session = Depends(get_db),
+                     user: schemas.User = Depends(get_current_user)):
     try:
         return crud.create_equipment(db, equipment)
     except ValueError as e:
@@ -126,7 +130,8 @@ def get_equipments(db: Session = Depends(get_db)):
 
 # --- Characters ---
 @app.post("/characters/", response_model=schemas.Character)
-def create_character(character: schemas.CharacterCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def create_character(character: schemas.CharacterCreate, db: Session = Depends(get_db),
+                     user: schemas.User = Depends(get_current_user)):
     return crud.create_character(db, character, user.id)
 
 @app.get("/characters/", response_model=List[schemas.Character])
@@ -134,14 +139,16 @@ def get_characters(db: Session = Depends(get_db), user: schemas.User = Depends(g
     return crud.get_characters_by_user(db, user.id)
 
 @app.get("/characters/{local_id}", response_model=schemas.Character)
-def get_character(local_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def get_character(local_id: int, db: Session = Depends(get_db),
+                  user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     return character
 
 @app.delete("/characters/{local_id}", status_code=204)
-def delete_character(local_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def delete_character(local_id: int, db: Session = Depends(get_db),
+                     user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
@@ -149,7 +156,8 @@ def delete_character(local_id: int, db: Session = Depends(get_db), user: schemas
     return Response(status_code=204)
 
 @app.put("/characters/{local_id}", response_model=schemas.Character)
-def update_character(local_id: int, character_update: schemas.CharacterCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def update_character(local_id: int, character_update: schemas.CharacterCreate,
+                     db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
@@ -185,14 +193,17 @@ def level_up_character(
 
 # --- CharacterAbilities ---
 @app.get("/characters/{local_id}/abilities/", response_model=List[schemas.CharacterAbility])
-def get_character_abilities(local_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def get_character_abilities(local_id: int, db: Session = Depends(get_db),
+                            user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.get_character_abilities(db, character.id)
 
 @app.post("/characters/{local_id}/abilities/", response_model=schemas.CharacterAbility)
-def add_ability_to_character(local_id: int, ca: schemas.CharacterAbilityCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def add_ability_to_character(local_id: int, ca: schemas.CharacterAbilityCreate,
+                             db: Session = Depends(get_db),
+                             user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
@@ -202,7 +213,9 @@ def add_ability_to_character(local_id: int, ca: schemas.CharacterAbilityCreate, 
         raise HTTPException(status_code=400, detail=str(e))
 
 @app.delete("/characters/{local_id}/abilities/{ability_id}", status_code=204)
-def delete_ability_from_character(local_id: int, ability_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def delete_ability_from_character(local_id: int, ability_id: int,
+                                  db: Session = Depends(get_db),
+                                  user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
@@ -214,28 +227,35 @@ def delete_ability_from_character(local_id: int, ability_id: int, db: Session = 
 
 # --- CharacterEquipment ---
 @app.get("/characters/{local_id}/equipment/", response_model=List[schemas.CharacterEquipment])
-def get_character_equipments(local_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def get_character_equipments(local_id: int, db: Session = Depends(get_db),
+                             user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.get_character_equipments(db, character.id)
 
 @app.get("/characters/{local_id}/equipment/equipped/", response_model=List[schemas.CharacterEquipment])
-def get_character_equipped_items(local_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def get_character_equipped_items(local_id: int, db: Session = Depends(get_db),
+                                 user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.get_character_equipped_items(db, character.id)
 
 @app.post("/characters/{local_id}/equipment/", response_model=schemas.CharacterEquipment)
-def add_equipment_to_character(local_id: int, ce: schemas.CharacterEquipmentCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def add_equipment_to_character(local_id: int, ce: schemas.CharacterEquipmentCreate,
+                               db: Session = Depends(get_db),
+                               user: schemas.User = Depends(get_current_user)):
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.add_equipment_to_character(db, character.id, ce)
 
 @app.delete("/characters/{local_id}/equipment/{equipment_id}", status_code=204)
-def delete_equipment_from_character(local_id: int, equipment_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def delete_equipment_from_character(local_id: int, equipment_id: int,
+                                    db: Session = Depends(get_db),
+                                    user: schemas.User = Depends(get_current_user)):
+
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
@@ -255,7 +275,9 @@ def equip_equipment(local_id: int, equipment_id: int, db: Session = Depends(get_
     return ce
 
 @app.patch("/characters/{local_id}/equipment/{equipment_id}/unequip", response_model=schemas.CharacterEquipment)
-def unequip_equipment(local_id: int, equipment_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def unequip_equipment(local_id: int, equipment_id: int, db: Session = Depends(get_db),
+                      user: schemas.User = Depends(get_current_user)):
+
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
@@ -266,7 +288,9 @@ def unequip_equipment(local_id: int, equipment_id: int, db: Session = Depends(ge
 
 # --- Итоговые характеристики персонажа с учётом экипировки ---
 @app.get("/characters/{local_id}/effective_stats/", response_model=Dict[str, Any])
-def get_effective_stats(local_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def get_effective_stats(local_id: int, db: Session = Depends(get_db),
+                        user: schemas.User = Depends(get_current_user)):
+
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
         raise HTTPException(status_code=404, detail="Character not found")
