@@ -164,3 +164,67 @@ def test_equipment_inventory():
     # Проверить только надетые предметы
     resp = client.get(f"/characters/{local_id}/equipment/equipped/", headers=headers)
     assert len(resp.json()) == 2
+
+# проверка классов
+
+def test_character_class_crud():
+    token = get_token("classuser3", "classpass3")
+    headers = auth_headers(token)
+    # Создать класс
+    resp = client.post("/character_classes/", json={"name": "Bard", "description": "A charming musician"}, headers=headers)
+    assert resp.status_code == 200
+    class_id = resp.json()["id"]
+    # Получить список классов
+    resp = client.get("/character_classes/", headers=headers)
+    assert resp.status_code == 200
+    classes = resp.json()
+    assert any(c["id"] == class_id and c["name"] == "Bard" for c in classes)
+
+# Проверка прогресси уровня
+
+def test_class_progression_crud():
+    token = get_token("proguser3", "progpass3")
+    headers = auth_headers(token)
+    # Создать класс персонажа
+    resp = client.post("/character_classes/", json={"name": "Monk", "description": "Master of martial arts"}, headers=headers)
+    assert resp.status_code == 200
+    class_id = resp.json()["id"]
+
+    # Создать прогрессию для уровня 1
+    prog = {
+        "character_class_id": class_id,
+        "level": 1,
+        "hp_bonus": 6,
+        "abilities": "[]",
+        "other_bonuses": '{"armor_class": 1}'
+    }
+    resp = client.post("/class_progression/", json=prog, headers=headers)
+    assert resp.status_code == 200
+    prog_id = resp.json()["id"]
+
+    # Получить прогрессию по id
+    resp = client.get(f"/class_progression/{prog_id}", headers=headers)
+    assert resp.status_code == 200
+    data = resp.json()
+    assert data["character_class_id"] == class_id
+    assert data["level"] == 1
+
+    # Обновить прогрессию
+    prog["hp_bonus"] = 8
+    resp = client.put(f"/class_progression/{prog_id}", json=prog, headers=headers)
+    assert resp.status_code == 200
+    assert resp.json()["hp_bonus"] == 8
+
+    # Получить список всей прогрессии
+    resp = client.get("/class_progression/", headers=headers)
+    assert resp.status_code == 200
+    assert any(p["id"] == prog_id for p in resp.json())
+
+    # Удалить прогрессию
+    resp = client.delete(f"/class_progression/{prog_id}", headers=headers)
+    assert resp.status_code == 204
+
+    # Проверить, что прогрессии больше нет
+    resp = client.get(f"/class_progression/{prog_id}", headers=headers)
+    assert resp.status_code == 404
+

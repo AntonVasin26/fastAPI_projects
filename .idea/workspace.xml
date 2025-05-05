@@ -4,9 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Добавление тестов">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/minimal_db_2.2.db" beforeDir="false" afterPath="$PROJECT_DIR$/minimal_db_2.2.db" afterDir="false" />
+    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Добавление тестов часть 1 (проверка подключения абилок и снаряжения)">
       <change beforePath="$PROJECT_DIR$/tests/test_main.py" beforeDir="false" afterPath="$PROJECT_DIR$/tests/test_main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -304,7 +302,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746469581030</updated>
     </task>
-    <option name="localTasksCounter" value="25" />
+    <task id="LOCAL-00025" summary="Добавление тестов часть 1 (проверка подключения абилок и снаряжения)">
+      <option name="closed" value="true" />
+      <created>1746470544360</created>
+      <option name="number" value="00025" />
+      <option name="presentableId" value="LOCAL-00025" />
+      <option name="project" value="LOCAL" />
+      <updated>1746470544360</updated>
+    </task>
+    <option name="localTasksCounter" value="26" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -345,7 +351,8 @@
     <MESSAGE value="- Добавлено поле effects (json) в Equipment для модификаторов характеристик&#10;- Перерасчёт характеристик персонажа реализован на лету с учётом надетых предметов&#10;- Добавлены эндпоинты для надевания и снятия предмета&#10;- Добавлен эндпоинт для просмотра только надетых предметов&#10;- is_equipped теперь хранится в CharacterEquipment" />
     <MESSAGE value="Добавление ClassProgresion в новую версию." />
     <MESSAGE value="Добавление тестов" />
-    <option name="LAST_COMMIT_MESSAGE" value="Добавление тестов" />
+    <MESSAGE value="Добавление тестов часть 1 (проверка подключения абилок и снаряжения)" />
+    <option name="LAST_COMMIT_MESSAGE" value="Добавление тестов часть 1 (проверка подключения абилок и снаряжения)" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_py$.coverage" NAME=" Coverage Results" MODIFIED="1746469687525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
