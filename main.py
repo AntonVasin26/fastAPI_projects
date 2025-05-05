@@ -1,4 +1,4 @@
-"""Main FastAPI application for RPG project."""
+"""Main FastAPI application for DnD project."""
 
 import json
 from typing import Any, Dict, List
