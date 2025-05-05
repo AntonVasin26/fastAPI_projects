@@ -228,3 +228,202 @@ def test_class_progression_crud():
     resp = client.get(f"/class_progression/{prog_id}", headers=headers)
     assert resp.status_code == 404
 
+def test_character_crud_and_access():
+    # Регистрация и создание класса персонажа
+    token = get_token("charuser3", "charpass3")
+    headers = auth_headers(token)
+    resp = client.post("/character_classes/", json={"name": "Druid", "description": "Nature priest"}, headers=headers)
+    class_id = resp.json()["id"]
+
+    # Создание персонажа
+    char_data = {
+        "local_id": 1,
+        "name": "Radagast",
+        "character_class_id": class_id,
+        "level": 1,
+        "max_hp": 12,
+        "current_hp": 12,
+        "armor_class": 11,
+        "strength": 8,
+        "dexterity": 13,
+        "constitution": 12,
+        "intelligence": 14,
+        "wisdom": 16,
+        "charisma": 10
+    }
+    resp = client.post("/characters/", json=char_data, headers=headers)
+    assert resp.status_code == 200
+    char_id = resp.json()["local_id"]
+
+    # Получение списка персонажей пользователя
+    resp = client.get("/characters/", headers=headers)
+    assert resp.status_code == 200
+    assert any(c["local_id"] == char_id for c in resp.json())
+
+    # Получение персонажа по local_id
+    resp = client.get(f"/characters/{char_id}", headers=headers)
+    assert resp.status_code == 200
+    assert resp.json()["name"] == "Radagast"
+
+    # Обновление персонажа (смена имени)
+    char_data["name"] = "Radagast the Brown"
+    resp = client.put(f"/characters/{char_id}", json=char_data, headers=headers)
+    assert resp.status_code == 200
+    assert resp.json()["name"] == "Radagast the Brown"
+
+    # Удаление персонажа
+    resp = client.delete(f"/characters/{char_id}", headers=headers)
+    assert resp.status_code == 204
+
+    # Проверка отсутствия персонажа
+    resp = client.get(f"/characters/{char_id}", headers=headers)
+    assert resp.status_code == 404
+
+
+#Тест персонажей
+
+def test_no_access_to_other_users_character():
+    # Пользователь 1 создаёт персонажа
+    token1 = get_token("userA", "passA")
+    headers1 = auth_headers(token1)
+    resp = client.post("/character_classes/", json={"name": "Ranger", "description": ""}, headers=headers1)
+    class_id = resp.json()["id"]
+    char_data = {
+        "local_id": 1,
+        "name": "Legolas",
+        "character_class_id": class_id,
+        "level": 1,
+        "max_hp": 10,
+        "current_hp": 10,
+        "armor_class": 13,
+        "strength": 10,
+        "dexterity": 17,
+        "constitution": 12,
+        "intelligence": 12,
+        "wisdom": 14,
+        "charisma": 11
+    }
+    resp = client.post("/characters/", json=char_data, headers=headers1)
+    assert resp.status_code == 200
+    char_id = resp.json()["local_id"]
+
+    # Пользователь 2 пытается получить чужого персонажа
+    token2 = get_token("userB", "passB")
+    headers2 = auth_headers(token2)
+    resp = client.get(f"/characters/{char_id}", headers=headers2)
+    assert resp.status_code == 404
+
+    # Пользователь 2 пытается удалить чужого персонажа
+    resp = client.delete(f"/characters/{char_id}", headers=headers2)
+    assert resp.status_code == 404
+
+#Тесты инвенторя
+def test_inventory_add_and_view():
+    token = get_token("invuser2", "invpass2")
+    headers = auth_headers(token)
+    # Создать класс и персонажа
+    resp = client.post("/character_classes/", json={"name": "Thief", "description": "Stealthy"}, headers=headers)
+    class_id = resp.json()["id"]
+    char_data = {
+        "local_id": 1,
+        "name": "Garrett",
+        "character_class_id": class_id,
+        "level": 1,
+        "max_hp": 8,
+        "current_hp": 8,
+        "armor_class": 12,
+        "strength": 9,
+        "dexterity": 15,
+        "constitution": 10,
+        "intelligence": 13,
+        "wisdom": 11,
+        "charisma": 12
+    }
+    resp = client.post("/characters/", json=char_data, headers=headers)
+    local_id = resp.json()["local_id"]
+
+    # Создать два предмета
+    eq1 = {"name": "Short Sword", "cost": 10, "rarity": "common", "description": "A short blade", "effects": '{"strength": 1}'}
+    eq2 = {"name": "Cloak", "cost": 5, "rarity": "common", "description": "Helps to hide", "effects": '{"dexterity": 2}'}
+    resp1 = client.post("/equipment/", json=eq1, headers=headers)
+    resp2 = client.post("/equipment/", json=eq2, headers=headers)
+    eq1_id, eq2_id = resp1.json()["id"], resp2.json()["id"]
+
+    # Добавить оба предмета в инвентарь
+    resp = client.post(f"/characters/{local_id}/equipment/", json={"equipment_id": eq1_id, "is_equipped": False}, headers=headers)
+    assert resp.status_code == 200
+    resp = client.post(f"/characters/{local_id}/equipment/", json={"equipment_id": eq2_id, "is_equipped": False}, headers=headers)
+    assert resp.status_code == 200
+
+    # Проверить что оба предмета в инвентаре
+    resp = client.get(f"/characters/{local_id}/equipment/", headers=headers)
+    eq_list = resp.json()
+    assert len(eq_list) == 2
+    ids = [item["equipment"]["id"] for item in eq_list]
+    assert eq1_id in ids and eq2_id in ids
+
+def test_inventory_equip_and_unequip():
+    token = get_token("invuser3", "invpass3")
+    headers = auth_headers(token)
+    # Создать класс и персонажа
+    resp = client.post("/character_classes/", json={"name": "Knight", "description": ""}, headers=headers)
+    class_id = resp.json()["id"]
+    char_data = {
+        "local_id": 1,
+        "name": "Lancelot",
+        "character_class_id": class_id,
+        "level": 1,
+        "max_hp": 14,
+        "current_hp": 14,
+        "armor_class": 15,
+        "strength": 13,
+        "dexterity": 12,
+        "constitution": 12,
+        "intelligence": 10,
+        "wisdom": 11,
+        "charisma": 14
+    }
+    resp = client.post("/characters/", json=char_data, headers=headers)
+    local_id = resp.json()["local_id"]
+
+    # Создать предметы
+    eq1 = {"name": "Shield", "cost": 15, "rarity": "uncommon", "description": "Blocks attacks", "effects": '{"armor_class": 2}'}
+    eq2 = {"name": "Boots", "cost": 7, "rarity": "common", "description": "Fast running", "effects": '{"dexterity": 1}'}
+    resp1 = client.post("/equipment/", json=eq1, headers=headers)
+    resp2 = client.post("/equipment/", json=eq2, headers=headers)
+    eq1_id, eq2_id = resp1.json()["id"], resp2.json()["id"]
+
+    # Добавить в инвентарь
+    client.post(f"/characters/{local_id}/equipment/", json={"equipment_id": eq1_id, "is_equipped": False}, headers=headers)
+    client.post(f"/characters/{local_id}/equipment/", json={"equipment_id": eq2_id, "is_equipped": False}, headers=headers)
+
+    # Надеть только Shield
+    resp = client.patch(f"/characters/{local_id}/equipment/{eq1_id}/equip", headers=headers)
+    assert resp.status_code == 200
+    # Проверить только Shield надет
+    resp = client.get(f"/characters/{local_id}/equipment/equipped/", headers=headers)
+    equipped = resp.json()
+    assert len(equipped) == 1
+    assert equipped[0]["equipment"]["id"] == eq1_id
+
+    # Надеть Boots, теперь оба надеты
+    resp = client.patch(f"/characters/{local_id}/equipment/{eq2_id}/equip", headers=headers)
+    resp = client.get(f"/characters/{local_id}/equipment/equipped/", headers=headers)
+    equipped = resp.json()
+    ids = [item["equipment"]["id"] for item in equipped]
+    assert eq1_id in ids and eq2_id in ids
+
+    # Снять Shield
+    resp = client.patch(f"/characters/{local_id}/equipment/{eq1_id}/unequip", headers=headers)
+    resp = client.get(f"/characters/{local_id}/equipment/equipped/", headers=headers)
+    equipped = resp.json()
+    ids = [item["equipment"]["id"] for item in equipped]
+    assert eq1_id not in ids and eq2_id in ids
+
+    # Удалить Boots из инвентаря
+    resp = client.delete(f"/characters/{local_id}/equipment/{eq2_id}", headers=headers)
+    assert resp.status_code == 204
+    # Проверить что Boots нет ни в инвентаре, ни в надетых
+    resp = client.get(f"/characters/{local_id}/equipment/", headers=headers)
+    ids = [item["equipment"]["id"] for item in resp.json()]
+    assert eq2_id not in ids
