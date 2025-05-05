@@ -114,7 +114,6 @@ def get_character(character_id: int, db: Session = Depends(get_db), user: schema
         raise HTTPException(status_code=404, detail="Character not found")
     return character
 
-# --- Повышение уровня персонажа ---
 @app.post("/characters/{character_id}/levelup", response_model=schemas.Character)
 def level_up_character(character_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
     character = crud.get_character(db, character_id)
@@ -138,15 +137,25 @@ def get_character_abilities(character_id: int, db: Session = Depends(get_db), us
     return crud.get_character_abilities(db, character_id)
 
 # --- CharacterEquipment ---
+
 @app.post("/characters/{character_id}/equipment/", response_model=schemas.CharacterEquipment)
-def add_equipment_to_character(character_id: int, ce: schemas.CharacterEquipmentCreate, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def add_equipment_to_character(
+    character_id: int,
+    ce: schemas.CharacterEquipmentCreate,
+    db: Session = Depends(get_db),
+    user: schemas.User = Depends(get_current_user)
+):
     character = crud.get_character(db, character_id)
     if character is None or character.owner_id != user.id:
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.add_equipment_to_character(db, character_id, ce)
 
 @app.get("/characters/{character_id}/equipment/", response_model=List[schemas.CharacterEquipment])
-def get_character_equipments(character_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
+def get_character_equipments(
+    character_id: int,
+    db: Session = Depends(get_db),
+    user: schemas.User = Depends(get_current_user)
+):
     character = crud.get_character(db, character_id)
     if character is None or character.owner_id != user.id:
         raise HTTPException(status_code=404, detail="Character not found")

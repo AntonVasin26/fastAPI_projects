@@ -1,7 +1,6 @@
 from pydantic import BaseModel, Field
 from typing import List, Optional
 
-# --- CharacterClass ---
 class CharacterClassBase(BaseModel):
     name: str
     description: Optional[str] = None
@@ -14,11 +13,10 @@ class CharacterClass(CharacterClassBase):
     class Config:
         from_attributes = True
 
-# --- Ability ---
 class AbilityBase(BaseModel):
     name: str
     available_classes: str
-    uses: int  # -1 = неограниченно
+    uses: int
     description: Optional[str] = None
 
 class AbilityCreate(AbilityBase):
@@ -29,7 +27,6 @@ class Ability(AbilityBase):
     class Config:
         from_attributes = True
 
-# --- ClassLevelAbility ---
 class ClassLevelAbilityBase(BaseModel):
     class_id: int
     level: int
@@ -44,7 +41,6 @@ class ClassLevelAbility(ClassLevelAbilityBase):
     class Config:
         from_attributes = True
 
-# --- CharacterAbility ---
 class CharacterAbilityBase(BaseModel):
     ability_id: int
     current_uses: int
@@ -59,7 +55,6 @@ class CharacterAbility(CharacterAbilityBase):
     class Config:
         from_attributes = True
 
-# --- Equipment ---
 class EquipmentBase(BaseModel):
     name: str
     cost: int
@@ -74,7 +69,6 @@ class Equipment(EquipmentBase):
     class Config:
         from_attributes = True
 
-# --- CharacterEquipment ---
 class CharacterEquipmentBase(BaseModel):
     equipment_id: int
     is_equipped: int = 0
@@ -89,12 +83,11 @@ class CharacterEquipment(CharacterEquipmentBase):
     class Config:
         from_attributes = True
 
-# --- Character ---
 class CharacterBase(BaseModel):
     name: str
     race: str
     background: str
-    character_class_id: int  # id класса персонажа
+    character_class_id: int
     level: int = Field(ge=1)
     armor_class: int
     strength: int = Field(ge=1, le=30)
@@ -112,11 +105,10 @@ class Character(CharacterBase):
     abilities: List[CharacterAbility] = []
     equipment: List[CharacterEquipment] = []
     owner_id: int
-    character_class_rel: Optional[CharacterClass] = None  # удобно для вывода инфы о классе
+    character_class_rel: Optional[CharacterClass] = None
     class Config:
         from_attributes = True
 
-# --- User ---
 class UserBase(BaseModel):
     username: str
 

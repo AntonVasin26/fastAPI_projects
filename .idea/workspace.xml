@@ -4,7 +4,13 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Изменение schemas для устранения бага с двумя описаниями класса." />
+    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Версия перед пееработкой файлов из за ошибки работы get characters">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/models.py" beforeDir="false" afterPath="$PROJECT_DIR$/models.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemas.py" afterDir="false" />
+    </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -95,7 +101,7 @@
       <workItem from="1746365392294" duration="3175000" />
       <workItem from="1746435610437" duration="1140000" />
       <workItem from="1746436782459" duration="1205000" />
-      <workItem from="1746439209855" duration="739000" />
+      <workItem from="1746439209855" duration="1366000" />
     </task>
     <task id="LOCAL-00003" summary="Создание файла запуска">
       <option name="closed" value="true" />
@@ -177,7 +183,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746439700305</updated>
     </task>
-    <option name="localTasksCounter" value="13" />
+    <task id="LOCAL-00013" summary="Версия перед пееработкой файлов из за ошибки работы get characters">
+      <option name="closed" value="true" />
+      <created>1746440112990</created>
+      <option name="number" value="00013" />
+      <option name="presentableId" value="LOCAL-00013" />
+      <option name="project" value="LOCAL" />
+      <updated>1746440112990</updated>
+    </task>
+    <option name="localTasksCounter" value="14" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -206,7 +220,8 @@
     <MESSAGE value="переработка main" />
     <MESSAGE value="Изменения груд для проверки существования записи о сущеествующих предметах способностях и классах." />
     <MESSAGE value="Изменение schemas для устранения бага с двумя описаниями класса." />
-    <option name="LAST_COMMIT_MESSAGE" value="Изменение schemas для устранения бага с двумя описаниями класса." />
+    <MESSAGE value="Версия перед пееработкой файлов из за ошибки работы get characters" />
+    <option name="LAST_COMMIT_MESSAGE" value="Версия перед пееработкой файлов из за ошибки работы get characters" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1746364311547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

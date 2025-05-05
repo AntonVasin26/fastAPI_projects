@@ -91,7 +91,7 @@ def get_equipment_by_name(db: Session, name: str):
 
 def create_equipment(db: Session, equipment: schemas.EquipmentCreate):
     if get_equipment_by_name(db, equipment.name):
-        raise ValueError ("Equipment with this name already exists")
+        raise ValueError("Equipment with this name already exists")
     db_equipment = models.Equipment(**equipment.dict())
     db.add(db_equipment)
     db.commit()
@@ -136,7 +136,6 @@ def level_up_character(db: Session, character_id: int):
         return None
     character.level += 1
 
-    # Найти новые способности для этого класса и уровня
     new_abilities = get_class_level_abilities_for_class_and_level(db, character.character_class_id, character.level)
     for cla in new_abilities:
         already = character_has_ability(db, character.id, cla.ability_id)
@@ -144,8 +143,8 @@ def level_up_character(db: Session, character_id: int):
             db_ca = models.CharacterAbility(
                 character_id=character.id,
                 ability_id=cla.ability_id,
-                current_uses=cla.ability.ability.uses if hasattr(cla, 'ability') and cla.ability else -1,
-                name=cla.ability.ability.name if hasattr(cla, 'ability') and cla.ability else ""
+                current_uses=cla.ability.uses if cla.ability else -1,
+                name=cla.ability.name if cla.ability else ""
             )
             db.add(db_ca)
     db.commit()
