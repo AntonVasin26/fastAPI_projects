@@ -73,11 +73,24 @@ def get_ability(db: Session, ability_id: int):
 
 # --- CharacterAbility ---
 def add_ability_to_character(db: Session, character_id: int, ca: schemas.CharacterAbilityCreate):
+    # Проверка: есть ли уже такая способность у персонажа
+    exists = db.query(models.CharacterAbility).filter_by(character_id=character_id, ability_id=ca.ability_id).first()
+    if exists:
+        raise ValueError("This character already has this ability")
     db_ca = models.CharacterAbility(character_id=character_id, **ca.dict())
     db.add(db_ca)
     db.commit()
     db.refresh(db_ca)
     return db_ca
+
+def remove_ability_from_character(db: Session, character_id: int, ability_id: int):
+    ca = db.query(models.CharacterAbility).filter_by(character_id=character_id, ability_id=ability_id).first()
+    if not ca:
+        return None
+    db.delete(ca)
+    db.commit()
+    return ca
+
 
 def get_character_abilities(db: Session, character_id: int):
     return db.query(models.CharacterAbility).filter(models.CharacterAbility.character_id == character_id).all()
@@ -111,6 +124,15 @@ def add_equipment_to_character(db: Session, character_id: int, ce: schemas.Chara
     db.commit()
     db.refresh(db_ce)
     return db_ce
+
+def remove_equipment_from_character(db: Session, character_id: int, equipment_id: int):
+    ce = db.query(models.CharacterEquipment).filter_by(character_id=character_id, equipment_id=equipment_id).first()
+    if not ce:
+        return None
+    db.delete(ce)
+    db.commit()
+    return ce
+
 
 def get_character_equipments(db: Session, character_id: int):
     return db.query(models.CharacterEquipment).filter(models.CharacterEquipment.character_id == character_id).all()

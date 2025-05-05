@@ -4,7 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="создание новой базы данных">
+    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Устранение бага с Сaracter Ability">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/new_minimal_db.db" beforeDir="false" afterPath="$PROJECT_DIR$/new_minimal_db.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -99,7 +102,7 @@
       <workItem from="1746436782459" duration="1205000" />
       <workItem from="1746439209855" duration="1718000" />
       <workItem from="1746440965139" duration="69000" />
-      <workItem from="1746444183379" duration="1589000" />
+      <workItem from="1746444183379" duration="2595000" />
     </task>
     <task id="LOCAL-00003" summary="Создание файла запуска">
       <option name="closed" value="true" />
@@ -213,7 +216,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746445177187</updated>
     </task>
-    <option name="localTasksCounter" value="17" />
+    <task id="LOCAL-00017" summary="Устранение бага с Сaracter Ability">
+      <option name="closed" value="true" />
+      <created>1746446065764</created>
+      <option name="number" value="00017" />
+      <option name="presentableId" value="LOCAL-00017" />
+      <option name="project" value="LOCAL" />
+      <updated>1746446065764</updated>
+    </task>
+    <option name="localTasksCounter" value="18" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -246,7 +257,8 @@
     <MESSAGE value="Изменение файлов для фикса ошибки getcharacters" />
     <MESSAGE value="Удаление старой базы данных из-за изменений столбцов числа таблицы." />
     <MESSAGE value="создание новой базы данных" />
-    <option name="LAST_COMMIT_MESSAGE" value="создание новой базы данных" />
+    <MESSAGE value="Устранение бага с Сaracter Ability" />
+    <option name="LAST_COMMIT_MESSAGE" value="Устранение бага с Сaracter Ability" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1746364311547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />

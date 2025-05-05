@@ -127,7 +127,29 @@ def add_ability_to_character(character_id: int, ca: schemas.CharacterAbilityCrea
     character = crud.get_character(db, character_id)
     if character is None or character.owner_id != user.id:
         raise HTTPException(status_code=404, detail="Character not found")
-    return crud.add_ability_to_character(db, character_id, ca)
+    try:
+        return crud.add_ability_to_character(db, character_id, ca)
+    except ValueError as e:
+        raise HTTPException(status_code=400, detail=str(e))
+
+from fastapi import Response
+
+@app.delete("/characters/{character_id}/abilities/{ability_id}", status_code=204)
+def delete_ability_from_character(
+    character_id: int,
+    ability_id: int,
+    db: Session = Depends(get_db),
+    user: schemas.User = Depends(get_current_user)
+):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    result = crud.remove_ability_from_character(db, character_id, ability_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Ability not found for this character")
+    return Response(status_code=204)
+
+
 
 @app.get("/characters/{character_id}/abilities/", response_model=List[schemas.CharacterAbility])
 def get_character_abilities(character_id: int, db: Session = Depends(get_db), user: schemas.User = Depends(get_current_user)):
@@ -149,6 +171,22 @@ def add_equipment_to_character(
     if character is None or character.owner_id != user.id:
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.add_equipment_to_character(db, character_id, ce)
+
+@app.delete("/characters/{character_id}/equipment/{equipment_id}", status_code=204)
+def delete_equipment_from_character(
+    character_id: int,
+    equipment_id: int,
+    db: Session = Depends(get_db),
+    user: schemas.User = Depends(get_current_user)
+):
+    character = crud.get_character(db, character_id)
+    if character is None or character.owner_id != user.id:
+        raise HTTPException(status_code=404, detail="Character not found")
+    result = crud.remove_equipment_from_character(db, character_id, equipment_id)
+    if result is None:
+        raise HTTPException(status_code=404, detail="Equipment not found for this character")
+    return Response(status_code=204)
+
 
 @app.get("/characters/{character_id}/equipment/", response_model=List[schemas.CharacterEquipment])
 def get_character_equipments(
