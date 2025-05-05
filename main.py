@@ -74,6 +74,11 @@ def create_character_class(
     db: Session = Depends(get_db),
     user: schemas.User = Depends(get_current_user)
 ):
+    try:
+        return crud.create_character_class(db, char_class)
+    except ValueError as exc:
+        raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     """Create a new character class."""
     try:
         return crud.create_character_class(db, char_class)
@@ -255,13 +260,21 @@ def get_character_abilities(
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.get_character_abilities(db, character.id)
 
-@app.post("/characters/{local_id}/abilities/", response_model=schemas.CharacterAbility)
-def add_ability_to_character(
-    local_id: int,
-    ca: schemas.CharacterAbilityCreate,
-    db: Session = Depends(get_db),
-    user: schemas.User = Depends(get_current_user)
-):
+    @app.post("/characters/{local_id}/abilities/", response_model=schemas.CharacterAbility)
+    def add_ability_to_character(
+            local_id: int,
+            ca: schemas.CharacterAbilityCreate,
+            db: Session = Depends(get_db),
+            user: schemas.User = Depends(get_current_user)
+    ):
+        character = crud.get_character_by_local_id(db, user.id, local_id)
+        if character is None:
+            raise HTTPException(status_code=404, detail="Character not found")
+        try:
+            return crud.add_ability_to_character(db, character.id, ca)
+        except ValueError as exc:
+            raise HTTPException(status_code=400, detail=str(exc)) from exc
+
     """Add an ability to a character."""
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:

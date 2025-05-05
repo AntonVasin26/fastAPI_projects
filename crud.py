@@ -31,13 +31,17 @@ def authenticate_user(db: Session, username: str, password: str) -> Optional[mod
     return user
 
 
-def create_character_class(db: Session, char_class: schemas.CharacterClassCreate) -> models.CharacterClass:
-    """Create a new character class."""
+def create_character_class(db: Session, char_class: schemas.CharacterClassCreate):
+    """Create a new character class, checking for duplicates."""
+    existing = db.query(models.CharacterClass).filter(models.CharacterClass.name == char_class.name).first()
+    if existing:
+        raise ValueError("Class with this name already exists")
     db_class = models.CharacterClass(**char_class.dict())
     db.add(db_class)
     db.commit()
     db.refresh(db_class)
     return db_class
+
 
 
 def get_character_classes(db: Session) -> List[models.CharacterClass]:
@@ -117,12 +121,16 @@ def get_progression_for_class_and_level(db: Session, character_class_id: int, le
 
 
 def create_ability(db: Session, ability: schemas.AbilityCreate) -> models.Ability:
-    """Create a new ability."""
+    """Create a new ability, checking for duplicates by name."""
+    existing = db.query(models.Ability).filter(models.Ability.name == ability.name).first()
+    if existing:
+        raise ValueError("Ability with this name already exists")
     db_ability = models.Ability(**ability.dict())
     db.add(db_ability)
     db.commit()
     db.refresh(db_ability)
     return db_ability
+
 
 
 def get_abilities(db: Session) -> List[models.Ability]:
@@ -131,12 +139,16 @@ def get_abilities(db: Session) -> List[models.Ability]:
 
 
 def create_equipment(db: Session, equipment: schemas.EquipmentCreate) -> models.Equipment:
-    """Create new equipment."""
+    """Create new equipment, checking for duplicates by name."""
+    existing = db.query(models.Equipment).filter(models.Equipment.name == equipment.name).first()
+    if existing:
+        raise ValueError("Equipment with this name already exists")
     db_equipment = models.Equipment(**equipment.dict())
     db.add(db_equipment)
     db.commit()
     db.refresh(db_equipment)
     return db_equipment
+
 
 
 def get_equipments(db: Session) -> List[models.Equipment]:
@@ -199,12 +211,19 @@ def get_character_abilities(db: Session, character_id: int) -> List[models.Chara
 
 
 def add_ability_to_character(db: Session, character_id: int, ca: schemas.CharacterAbilityCreate) -> models.CharacterAbility:
-    """Add an ability to a character."""
+    """Add an ability to a character, checking for duplicates."""
+    existing = db.query(models.CharacterAbility).filter(
+        models.CharacterAbility.character_id == character_id,
+        models.CharacterAbility.ability_id == ca.ability_id
+    ).first()
+    if existing:
+        raise ValueError("This character already has this ability")
     db_ca = models.CharacterAbility(character_id=character_id, **ca.dict())
     db.add(db_ca)
     db.commit()
     db.refresh(db_ca)
     return db_ca
+
 
 
 def remove_ability_from_character(db: Session, character_id: int, ability_id: int) -> Optional[models.CharacterAbility]:

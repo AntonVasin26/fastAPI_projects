@@ -4,8 +4,10 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Улучшения для прохождения Pylint и изменение Readme">
+    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Обновление базы данных">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crud.py" beforeDir="false" afterPath="$PROJECT_DIR$/crud.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/minimal_db_2.2.db" beforeDir="false" afterPath="$PROJECT_DIR$/minimal_db_2.2.db" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -88,7 +90,8 @@
   <component name="SharedIndexes">
     <attachedChunks>
       <set>
-        <option value="bundled-python-sdk-67fca87a943a-d3b881c8e49f-com.jetbrains.pycharm.community.sharedIndexes.bundled-PC-233.11799.259" />
+        <option value="bundled-js-predefined-d6986cc7102b-5c90d61e3bab-JavaScript-PY-242.23339.19" />
+        <option value="bundled-python-sdk-0029f7779945-399fe30bd8c1-com.jetbrains.pycharm.pro.sharedIndexes.bundled-PY-242.23339.19" />
       </set>
     </attachedChunks>
   </component>
@@ -125,6 +128,7 @@
       <workItem from="1746440965139" duration="69000" />
       <workItem from="1746444183379" duration="4778000" />
       <workItem from="1746450334023" duration="1276000" />
+      <workItem from="1746483982420" duration="1639000" />
     </task>
     <task id="LOCAL-00003" summary="Создание файла запуска">
       <option name="closed" value="true" />
@@ -358,7 +362,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746474688320</updated>
     </task>
-    <option name="localTasksCounter" value="32" />
+    <task id="LOCAL-00032" summary="Обновление базы данных">
+      <option name="closed" value="true" />
+      <created>1746476067472</created>
+      <option name="number" value="00032" />
+      <option name="presentableId" value="LOCAL-00032" />
+      <option name="project" value="LOCAL" />
+      <updated>1746476067472</updated>
+    </task>
+    <option name="localTasksCounter" value="33" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -376,7 +388,6 @@
     </option>
   </component>
   <component name="VcsManagerConfiguration">
-    <MESSAGE value="Промежуточный комит перед созданием минимального наполнения базы данных" />
     <MESSAGE value="Промежуточный комит перед добавлением новых функций взаимолействия с классом персонажа." />
     <MESSAGE value="переработка crud" />
     <MESSAGE value="переработка main" />
@@ -401,7 +412,8 @@
     <MESSAGE value="Улучшения для прохождения Pylint" />
     <MESSAGE value="Улучшения main для прохождения Pylint" />
     <MESSAGE value="Улучшения для прохождения Pylint и изменение Readme" />
-    <option name="LAST_COMMIT_MESSAGE" value="Улучшения для прохождения Pylint и изменение Readme" />
+    <MESSAGE value="Обновление базы данных" />
+    <option name="LAST_COMMIT_MESSAGE" value="Обновление базы данных" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_py$.coverage" NAME=" Coverage Results" MODIFIED="1746469687525" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$/tests" />
