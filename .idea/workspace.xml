@@ -4,8 +4,8 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="Промежуточный комит перед добавлением новых функций взаимолействия с классом персонажа.">
-      <change beforePath="$PROJECT_DIR$/schemas.py" beforeDir="false" afterPath="$PROJECT_DIR$/schemas.py" afterDir="false" />
+    <list default="true" id="57624ce8-052c-4b43-98d8-ef26dfbad95e" name="Changes" comment="переработка crud">
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -96,6 +96,7 @@
       <workItem from="1746363590881" duration="1360000" />
       <workItem from="1746365392294" duration="3175000" />
       <workItem from="1746435610437" duration="1140000" />
+      <workItem from="1746436782459" duration="316000" />
     </task>
     <task id="LOCAL-00003" summary="Создание файла запуска">
       <option name="closed" value="true" />
@@ -137,7 +138,15 @@
       <option name="project" value="LOCAL" />
       <updated>1746373539333</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="переработка crud">
+      <option name="closed" value="true" />
+      <created>1746437004928</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1746437004928</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -162,7 +171,8 @@
     <MESSAGE value="Фикс бага из-за которого запускался defoult main вместо нужного." />
     <MESSAGE value="Промежуточный комит перед созданием минимального наполнения базы данных" />
     <MESSAGE value="Промежуточный комит перед добавлением новых функций взаимолействия с классом персонажа." />
-    <option name="LAST_COMMIT_MESSAGE" value="Промежуточный комит перед добавлением новых функций взаимолействия с классом персонажа." />
+    <MESSAGE value="переработка crud" />
+    <option name="LAST_COMMIT_MESSAGE" value="переработка crud" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
     <SUITE FILE_PATH="coverage/main_py$main.coverage" NAME="main Coverage Results" MODIFIED="1746364311547" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="false" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
