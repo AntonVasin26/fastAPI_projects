@@ -39,7 +39,6 @@ class ClassProgressionBase(BaseModel):
     character_class_id: int
     level: int
     hp_bonus: int = 0
-    abilities: Optional[str] = None  # JSON-строка со списком id или имен абилок
     other_bonuses: Optional[str] = None
 
 class ClassProgressionCreate(ClassProgressionBase):

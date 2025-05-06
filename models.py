@@ -23,7 +23,6 @@ class ClassProgression(Base):
     character_class_id = Column(Integer, ForeignKey("character_classes.id"))
     level = Column(Integer)
     hp_bonus = Column(Integer, default=0)
-    abilities = Column(String)  # JSON: ["fireball", "magic_missile"]
     other_bonuses = Column(String)  # JSON для других бонусов (опционально)
     character_class = relationship("CharacterClass", back_populates="progressions")
 
@@ -93,4 +92,11 @@ class CharacterEquipment(Base):
     name = Column(String)
     character = relationship("Character", back_populates="equipment")
     equipment = relationship("Equipment")
+
+
+class ClassProgressionAbility(Base):
+    __tablename__ = "class_progression_abilities"
+    id = Column(Integer, primary_key=True, index=True)
+    class_progression_id = Column(Integer, ForeignKey("class_progressions.id"))
+    ability_id = Column(Integer, ForeignKey("abilities.id"))
 

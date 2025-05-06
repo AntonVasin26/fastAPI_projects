@@ -293,11 +293,8 @@ def sync_character_level(db: Session, character: models.Character, new_level: in
     """Sync character's abilities and bonuses with class progression for new level."""
     for lvl in range(character.level + 1, new_level + 1):
         progression = get_progression_for_class_and_level(db, character.character_class_id, lvl)
-        if progression and progression.abilities:
-            try:
-                ability_ids = json.loads(progression.abilities)
-            except (json.JSONDecodeError, TypeError, AttributeError):
-                ability_ids = []
+        if progression:
+            ability_ids = get_abilities_for_progression(db, progression.id)
             for ab_id in ability_ids:
                 exists = db.query(models.CharacterAbility).filter(
                     models.CharacterAbility.character_id == character.id,
@@ -305,12 +302,30 @@ def sync_character_level(db: Session, character: models.Character, new_level: in
                 ).first()
                 if not exists:
                     db.add(models.CharacterAbility(character_id=character.id, ability_id=ab_id))
-        # Добавление бонуса к HP, если есть
-        if progression and progression.hp_bonus:
-            character.max_hp += progression.hp_bonus
-            character.current_hp += progression.hp_bonus
-
+            # HP бонусы
+            if progression.hp_bonus:
+                character.max_hp += progression.hp_bonus
+                character.current_hp += progression.hp_bonus
     character.level = new_level
     db.commit()
     db.refresh(character)
     return character
+
+
+
+def get_progression_for_class_and_level(db: Session, character_class_id: int, level: int):
+    """Получить progression для класса и уровня."""
+    return db.query(models.ClassProgression).filter(
+        models.ClassProgression.character_class_id == character_class_id,
+        models.ClassProgression.level == level
+    ).first()
+
+def get_abilities_for_progression(db: Session, class_progression_id: int):
+    """Получить все id способностей для progression."""
+    return [
+        cpa.ability_id
+        for cpa in db.query(models.ClassProgressionAbility).filter(
+            models.ClassProgressionAbility.class_progression_id == class_progression_id
+        ).all()
+    ]
+

@@ -428,3 +428,39 @@ def get_effective_stats(
                         stats[key] += value
             except (json.JSONDecodeError, TypeError, AttributeError):
                 pass
+
+@app.post("/class_progression/{progression_id}/add_ability/{ability_id}")
+def add_ability_to_progression(
+    progression_id: int,
+    ability_id: int,
+    db: Session = Depends(get_db),
+    user: schemas.User = Depends(get_current_user)
+):
+    """Add an ability to a class progression (admin endpoint)."""
+    cpa = models.ClassProgressionAbility(
+        class_progression_id=progression_id,
+        ability_id=ability_id
+    )
+    db.add(cpa)
+    db.commit()
+    db.refresh(cpa)
+    return cpa
+
+@app.delete("/class_progression/{progression_id}/remove_ability/{ability_id}", status_code=204)
+def remove_ability_from_progression(
+    progression_id: int,
+    ability_id: int,
+    db: Session = Depends(get_db),
+    user: schemas.User = Depends(get_current_user)
+):
+    """Remove an ability from a class progression (admin endpoint)."""
+    cpa = db.query(models.ClassProgressionAbility).filter(
+        models.ClassProgressionAbility.class_progression_id == progression_id,
+        models.ClassProgressionAbility.ability_id == ability_id
+    ).first()
+    if not cpa:
+        raise HTTPException(status_code=404, detail="Link not found")
+    db.delete(cpa)
+    db.commit()
+    return Response(status_code=204)
+
