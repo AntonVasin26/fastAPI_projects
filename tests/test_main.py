@@ -1,9 +1,20 @@
 """Тесты для RPG API с новой структурой progression-ability."""
+import os
+os.environ["DATABASE_URL"] = "sqlite:///./test.db"
 
-import pytest
-from fastapi.testclient import TestClient
+import sys
+import os as os2
+sys.path.append(os2.path.abspath(os2.path.join(os2.path.dirname(__file__), '..')))
 
 from main import app
+from database import Base, engine
+from fastapi.testclient import TestClient
+
+# Удалить старую тестовую базу, если она есть
+if os.path.exists("test.db"):
+    os.remove("test.db")
+# Создать таблицы в тестовой базе
+Base.metadata.create_all(bind=engine)
 
 client = TestClient(app)
 
@@ -447,3 +458,7 @@ def test_level_up_gives_abilities():
     assert resp.status_code == 200
     ability_ids = [a["ability"]["id"] for a in resp.json()]
     assert ability_id in ability_ids
+
+
+import atexit
+atexit.register(lambda: os.path.exists("test.db") and os.remove("test.db"))
