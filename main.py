@@ -8,11 +8,11 @@ from fastapi.security import OAuth2PasswordBearer, OAuth2PasswordRequestForm
 from sqlalchemy.orm import Session
 from jose import JWTError, jwt
 
+from database import SessionLocal, engine, Base
 import models
 import schemas
 import crud
 import auth
-from database import SessionLocal, engine, Base
 
 Base.metadata.create_all(bind=engine)
 
@@ -260,21 +260,13 @@ def get_character_abilities(
         raise HTTPException(status_code=404, detail="Character not found")
     return crud.get_character_abilities(db, character.id)
 
-    @app.post("/characters/{local_id}/abilities/", response_model=schemas.CharacterAbility)
-    def add_ability_to_character(
-            local_id: int,
-            ca: schemas.CharacterAbilityCreate,
-            db: Session = Depends(get_db),
-            user: schemas.User = Depends(get_current_user)
-    ):
-        character = crud.get_character_by_local_id(db, user.id, local_id)
-        if character is None:
-            raise HTTPException(status_code=404, detail="Character not found")
-        try:
-            return crud.add_ability_to_character(db, character.id, ca)
-        except ValueError as exc:
-            raise HTTPException(status_code=400, detail=str(exc)) from exc
-
+@app.post("/characters/{local_id}/abilities/", response_model=schemas.CharacterAbility)
+def add_ability_to_character(
+    local_id: int,
+    ca: schemas.CharacterAbilityCreate,
+    db: Session = Depends(get_db),
+    user: schemas.User = Depends(get_current_user)
+):
     """Add an ability to a character."""
     character = crud.get_character_by_local_id(db, user.id, local_id)
     if character is None:
@@ -283,6 +275,7 @@ def get_character_abilities(
         return crud.add_ability_to_character(db, character.id, ca)
     except ValueError as exc:
         raise HTTPException(status_code=400, detail=str(exc)) from exc
+
 
 @app.delete("/characters/{local_id}/abilities/{ability_id}", status_code=204)
 def delete_ability_from_character(

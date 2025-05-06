@@ -18,7 +18,7 @@ class CharacterClass(Base):
     progressions = relationship("ClassProgression", back_populates="character_class")
 
 class ClassProgression(Base):
-    __tablename__ = "class_progression"
+    __tablename__ = "class_progressions"
     id = Column(Integer, primary_key=True, index=True)
     character_class_id = Column(Integer, ForeignKey("character_classes.id"))
     level = Column(Integer)

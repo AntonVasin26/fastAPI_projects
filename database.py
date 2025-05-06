@@ -5,7 +5,7 @@ from sqlalchemy.ext.declarative import declarative_base
 from sqlalchemy.orm import sessionmaker
 
 # Укажи свой путь к базе данных
-SQLALCHEMY_DATABASE_URL = "sqlite:///./minimal_db_2.3.db.db"
+SQLALCHEMY_DATABASE_URL = "sqlite:///./minimal_db_2.4.db.db"
 
 engine = create_engine(
     SQLALCHEMY_DATABASE_URL, connect_args={"check_same_thread": False}
