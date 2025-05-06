@@ -1,20 +1,22 @@
 import os
-os.environ["DATABASE_URL"] = "sqlite:///./test.db"
-
 import sys
 import os as os2
+
+# Удаляем test.db до создания engine/соединения
+if os.path.exists("test.db"):
+    os.remove("test.db")
+
+os.environ["DATABASE_URL"] = "sqlite:///./test.db"
+
 sys.path.append(os2.path.abspath(os2.path.join(os2.path.dirname(__file__), '..')))
 
 from main import app
 from database import Base, engine
 from fastapi.testclient import TestClient
 
-# Удалить старую тестовую базу, если она есть
-if os.path.exists("test.db"):
-    os.remove("test.db")
 Base.metadata.create_all(bind=engine)
-
 client = TestClient(app)
+
 
 def get_token(username, password):
     """Получить JWT токен для пользователя."""
